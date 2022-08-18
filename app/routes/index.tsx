@@ -1,7 +1,16 @@
+import {
+  Button,
+  Center,
+  Container,
+  Group,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
-import { Button } from "~/components/Button";
-import { Footer } from "~/components/Footer";
+import SVG from "react-inlinesvg";
 
 export default function Index() {
   const [qrCode, setQrCode] = useState("");
@@ -19,24 +28,30 @@ export default function Index() {
   }, [text]);
 
   return (
-    <div className="flex flex-col h-screen">
-      <h1 className="text-5xl text-teal-600 font-bold">QR Code Generator</h1>
-      <div>
-        <Button>Text</Button>
-        <Button>Link</Button>
-      </div>
-      <input
-        className="border border-teal-600 rounded-lg p-2"
-        type="text"
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Enter text"
-      />
-      <div
-        className="w-64 flex-1"
-        dangerouslySetInnerHTML={{ __html: qrCode }}
-      ></div>
+    <Container>
+      <Stack sx={{ height: "100vh" }}>
+        <Stack sx={{ flex: 1 }}>
+          <Stack>
+            <Title>QR Code Generator</Title>
+            <Group>
+              <Button>Text</Button>
+              <Button>Link</Button>
+              <Button>Email</Button>
+            </Group>
+            <TextInput
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Enter Text"
+              label="Text"
+              value={text}
+            />
+          </Stack>
 
-      <Footer />
-    </div>
+          {qrCode && <SVG src={qrCode} />}
+        </Stack>
+        <Center>
+          <Text>Made with ❤️ in Vienna</Text>
+        </Center>
+      </Stack>
+    </Container>
   );
 }
