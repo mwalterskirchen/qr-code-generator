@@ -17,6 +17,7 @@ export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "QR Code Generator",
   viewport: "width=device-width,initial-scale=1",
+  description: "This is a QR Code Generator",
 });
 
 export default function App() {
