@@ -1,32 +1,31 @@
+import QRCode from "qrcode";
+import { useEffect, useState } from "react";
+
 export default function Index() {
+  const [qrCode, setQrCode] = useState("");
+
+  useEffect(() => {
+    async function generateQRCode() {
+      const qrCode = await QRCode.toString(
+        '<a href="https://google.com">Website</a>',
+        {
+          type: "svg",
+        }
+      );
+      setQrCode(qrCode);
+    }
+    generateQRCode();
+  }, []);
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div>
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      {qrCode && (
+        <div
+          style={{ width: "300px" }}
+          dangerouslySetInnerHTML={{ __html: qrCode }}
+        ></div>
+      )}
     </div>
   );
 }
