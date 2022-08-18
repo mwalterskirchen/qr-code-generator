@@ -4,53 +4,81 @@ import {
   Container,
   Group,
   Stack,
+  Tabs,
   Text,
+  Textarea,
   TextInput,
   Title,
 } from "@mantine/core";
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 import SVG from "react-inlinesvg";
+import { Footer } from "~/components/Footer";
 
 export default function Index() {
   const [qrCode, setQrCode] = useState("");
-  const [text, setText] = useState("");
+  const [content, setContent] = useState("");
+  const [contentType, setContentType] = useState<string | null>("text");
 
   useEffect(() => {
     async function generateQRCode() {
-      if (!text) return setQrCode("");
-      const qrCode = await QRCode.toString(text, {
+      if (!content || !contentType) return setQrCode("");
+
+      let qrCodeContent;
+
+      if (contentType === "url") {
+        qrCodeContent = `<a href="${content}">${content}</a>`;
+      } else {
+        qrCodeContent = content;
+      }
+
+      const qrCode = await QRCode.toString(qrCodeContent, {
         type: "svg",
       });
       setQrCode(qrCode);
     }
     generateQRCode();
-  }, [text]);
+  }, [content, contentType]);
 
   return (
     <Container>
       <Stack sx={{ height: "100vh" }}>
         <Stack sx={{ flex: 1 }}>
-          <Stack>
+          <Center>
             <Title>QR Code Generator</Title>
-            <Group>
-              <Button>Text</Button>
-              <Button>Link</Button>
-              <Button>Email</Button>
-            </Group>
-            <TextInput
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Enter Text"
-              label="Text"
-              value={text}
-            />
-          </Stack>
+          </Center>
+          <Tabs
+            value={contentType}
+            onTabChange={setContentType}
+            variant="pills"
+            defaultValue="text"
+          >
+            <Tabs.List>
+              <Tabs.Tab value="text">Text</Tabs.Tab>
+              <Tabs.Tab value="url">URL</Tabs.Tab>
+            </Tabs.List>
+            <Tabs.Panel value="text">
+              <Textarea
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Enter Text"
+                label="Text"
+                value={content}
+              />
+            </Tabs.Panel>
 
-          {qrCode && <SVG src={qrCode} />}
+            <Tabs.Panel value="url">
+              <TextInput
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="https://example.com"
+                label="URL"
+                value={content}
+              />
+            </Tabs.Panel>
+          </Tabs>
+
+          <SVG src={qrCode} />
         </Stack>
-        <Center>
-          <Text>Made with ❤️ in Vienna</Text>
-        </Center>
+        <Footer />
       </Stack>
     </Container>
   );
